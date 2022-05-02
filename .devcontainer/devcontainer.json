@@ -1,0 +1,25 @@
+{
+    "name": "kava_plugin",
+    "dockerComposeFile": [
+        "../docker-compose.yml"
+    ],
+    "service": "kava_plugin",
+    "workspaceFolder": "/app",
+    "shutdownAction": "stopCompose",
+    "extensions": [
+        "ms-python.python",
+        "ms-python.pylint",
+        "naumovs.color-highlight",
+        "github.copilot",
+        "eamodio.gitlens",
+        "tamasfe.even-better-toml"
+    ],
+    "settings": {
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": false,
+        "python.linting.flake8Enabled": true,
+        "python.venvFolders": [
+            ".venv"
+        ],
+    }
+}
