@@ -2,7 +2,7 @@ import uuid
 from decimal import Decimal
 
 from senkalib.caaj_journal import CaajJournal
-from senkalib.chain.transaction import Transaction
+from senkalib.chain.kava.kava_transaction import KavaTransaction
 from senkalib.token_original_id_table import TokenOriginalIdTable
 
 from kava_plugin.message_factory import MessageFactory
@@ -16,17 +16,17 @@ class KavaPlugin:
     PLATFORM = "kava"
 
     @classmethod
-    def can_handle(cls, transaction: Transaction) -> bool:
+    def can_handle(cls, transaction: KavaTransaction) -> bool:
         chain_type = transaction.get_transaction()["header"]["chain_id"]
         return KavaPlugin.chain in chain_type
 
     @classmethod
     def get_caajs(
-        cls, address: str, transaction: Transaction, token_table: TokenOriginalIdTable
+        cls, address: str, transaction: KavaTransaction, token_table: TokenOriginalIdTable
     ) -> list:
         caajs = []
 
-        messages = MessageFactory.get_messages(transaction.get_transaction()) if transaction.get_fail() is False else []
+        messages = MessageFactory.get_messages(transaction) if transaction.get_fail() is False else []
         trade_uuid = KavaPlugin._get_uuid()
         for message in messages:
             try:
@@ -87,7 +87,7 @@ class KavaPlugin:
         return caajs
 
     @classmethod
-    def __get_delegate_caajs(cls, transaction: Transaction, result, token_table, address, trade_uuid) -> list:
+    def __get_delegate_caajs(cls, transaction: KavaTransaction, result, token_table, address, trade_uuid) -> list:
         caajs = []
         if result['staking_amount'] is not None and Decimal(result['staking_amount']) != Decimal('0'):
             token_original_id = KavaPlugin._get_token_original_id(result['staking_token'])
@@ -132,7 +132,7 @@ class KavaPlugin:
         return caajs
 
     @classmethod
-    def __get_begin_unbonding_caajs(cls, transaction: Transaction, result, token_table, address, trade_uuid) -> list:
+    def __get_begin_unbonding_caajs(cls, transaction: KavaTransaction, result, token_table, address, trade_uuid) -> list:
         caajs = []
         if result['unbonding_amount'] is not None and Decimal(result['unbonding_amount']) != Decimal('0'):
             token_original_id = KavaPlugin._get_token_original_id(result['unbonding_token'])
@@ -177,7 +177,7 @@ class KavaPlugin:
         return caajs
 
     @classmethod
-    def __get_create_cdp_caajs(cls, transaction: Transaction, result, token_table, address, trade_uuid) -> list:
+    def __get_create_cdp_caajs(cls, transaction: KavaTransaction, result, token_table, address, trade_uuid) -> list:
         caajs = []
 
         token_original_id = KavaPlugin._get_token_original_id(result['deposit_token'])
@@ -220,7 +220,7 @@ class KavaPlugin:
         return caajs
 
     @classmethod
-    def __get_draw_cdp_caajs(cls, transaction: Transaction, result, token_table, address, trade_uuid) -> list:
+    def __get_draw_cdp_caajs(cls, transaction: KavaTransaction, result, token_table, address, trade_uuid) -> list:
         caajs = []
 
         token_original_id = KavaPlugin._get_token_original_id(result['draw_token'])
@@ -245,7 +245,7 @@ class KavaPlugin:
         return caajs
 
     @classmethod
-    def __get_repay_cdp_caajs(cls, transaction: Transaction, result, token_table, address, trade_uuid) -> list:
+    def __get_repay_cdp_caajs(cls, transaction: KavaTransaction, result, token_table, address, trade_uuid) -> list:
         caajs = []
 
         token_original_id = KavaPlugin._get_token_original_id(result['repay_token'])
@@ -289,7 +289,7 @@ class KavaPlugin:
         return caajs
 
     @classmethod
-    def __get_deposit_cdp_caajs(cls, transaction: Transaction, result, token_table, address, trade_uuid) -> list:
+    def __get_deposit_cdp_caajs(cls, transaction: KavaTransaction, result, token_table, address, trade_uuid) -> list:
         caajs = []
 
         token_original_id = KavaPlugin._get_token_original_id(result['deposit_token'])
@@ -314,7 +314,7 @@ class KavaPlugin:
         return caajs
 
     @classmethod
-    def __get_withdraw_cdp_caajs(cls, transaction: Transaction, result, token_table, address, trade_uuid) -> list:
+    def __get_withdraw_cdp_caajs(cls, transaction: KavaTransaction, result, token_table, address, trade_uuid) -> list:
         caajs = []
 
         token_original_id = KavaPlugin._get_token_original_id(result['withdraw_token'])
@@ -339,7 +339,7 @@ class KavaPlugin:
         return caajs
 
     @classmethod
-    def __get_claim_usdx_minting_reward_caajs(cls, transaction: Transaction, result, token_table, address, trade_uuid) -> list:
+    def __get_claim_usdx_minting_reward_caajs(cls, transaction: KavaTransaction, result, token_table, address, trade_uuid) -> list:
         caajs = []
 
         token_original_id = KavaPlugin._get_token_original_id(result['rewards'][0]['reward_token'])
@@ -364,7 +364,7 @@ class KavaPlugin:
         return caajs
 
     @classmethod
-    def __get_hard_withdraw_caajs(cls, transaction: Transaction, result, token_table, address, trade_uuid) -> list:
+    def __get_hard_withdraw_caajs(cls, transaction: KavaTransaction, result, token_table, address, trade_uuid) -> list:
         caajs = []
 
         token_original_id = KavaPlugin._get_token_original_id(result['hard_withdraw_token'])
@@ -389,7 +389,7 @@ class KavaPlugin:
         return caajs
 
     @classmethod
-    def __get_hard_deposit_caajs(cls, transaction: Transaction, result, token_table, address, trade_uuid) -> list:
+    def __get_hard_deposit_caajs(cls, transaction: KavaTransaction, result, token_table, address, trade_uuid) -> list:
         caajs = []
 
         token_original_id = KavaPlugin._get_token_original_id(result['hard_deposit_token'])
@@ -414,7 +414,7 @@ class KavaPlugin:
         return caajs
 
     @classmethod
-    def __get_hard_borrow_caajs(cls, transaction: Transaction, result, token_table, address, trade_uuid) -> list:
+    def __get_hard_borrow_caajs(cls, transaction: KavaTransaction, result, token_table, address, trade_uuid) -> list:
         caajs = []
 
         token_original_id = KavaPlugin._get_token_original_id(result['hard_borrow_token'])
@@ -439,7 +439,7 @@ class KavaPlugin:
         return caajs
 
     @classmethod
-    def __get_hard_repay_caajs(cls, transaction: Transaction, result, token_table, address, trade_uuid) -> list:
+    def __get_hard_repay_caajs(cls, transaction: KavaTransaction, result, token_table, address, trade_uuid) -> list:
         caajs = []
 
         token_original_id = KavaPlugin._get_token_original_id(result['hard_repay_token'])
@@ -464,7 +464,7 @@ class KavaPlugin:
         return caajs
 
     @classmethod
-    def __get_claim_hard_reward_caajs(cls, transaction: Transaction, result, token_table, address, trade_uuid) -> list:
+    def __get_claim_hard_reward_caajs(cls, transaction: KavaTransaction, result, token_table, address, trade_uuid) -> list:
         caajs = []
 
         for reward in result['rewards']:
@@ -490,7 +490,7 @@ class KavaPlugin:
         return caajs
 
     @classmethod
-    def __get_swap_exact_for_tokens_caajs(cls, transaction: Transaction, result, token_table, address, trade_uuid) -> list:
+    def __get_swap_exact_for_tokens_caajs(cls, transaction: KavaTransaction, result, token_table, address, trade_uuid) -> list:
         caajs = []
 
         token_original_id = KavaPlugin._get_token_original_id(result['input_token'])
@@ -553,7 +553,7 @@ class KavaPlugin:
         return caajs
 
     @classmethod
-    def __get_swap_deposit_caajs(cls, transaction: Transaction, result, token_table, address, trade_uuid) -> list:
+    def __get_swap_deposit_caajs(cls, transaction: KavaTransaction, result, token_table, address, trade_uuid) -> list:
         caajs = []
 
         caajs.append(CaajJournal(
@@ -596,7 +596,7 @@ class KavaPlugin:
         return caajs
 
     @classmethod
-    def __get_swap_withdraw_caajs(cls, transaction: Transaction, result, token_table, address, trade_uuid) -> list:
+    def __get_swap_withdraw_caajs(cls, transaction: KavaTransaction, result, token_table, address, trade_uuid) -> list:
         caajs = []
 
         caajs.append(CaajJournal(
@@ -639,7 +639,7 @@ class KavaPlugin:
         return caajs
 
     @classmethod
-    def __get_claim_swap_reward_caajs(cls, transaction: Transaction, result, token_table, address, trade_uuid) -> list:
+    def __get_claim_swap_reward_caajs(cls, transaction: KavaTransaction, result, token_table, address, trade_uuid) -> list:
         caajs = []
 
         for reward in result['rewards']:
@@ -665,7 +665,7 @@ class KavaPlugin:
         return caajs
 
     @classmethod
-    def __get_send_caajs(cls, transaction: Transaction, result, token_table, address, trade_uuid) -> list:
+    def __get_send_caajs(cls, transaction: KavaTransaction, result, token_table, address, trade_uuid) -> list:
         caajs = []
 
         recipient = result['recipient']
@@ -700,7 +700,7 @@ class KavaPlugin:
         return caajs
 
     @classmethod
-    def __get_create_atomic_swap_caajs(cls, transaction: Transaction, result, token_table, address, trade_uuid) -> list:
+    def __get_create_atomic_swap_caajs(cls, transaction: KavaTransaction, result, token_table, address, trade_uuid) -> list:
         caajs = []
 
         recipient = result['recipient']
@@ -709,7 +709,7 @@ class KavaPlugin:
             if address == recipient:
                 caaj_type = 'receive'
                 message = f'{recipient} {caaj_type} {result["amount"]} {result["token"]} from kava_bc_atomic_swap'
-                from_address = 'kava_bc_atomic_swap' 
+                from_address = 'kava_bc_atomic_swap'
                 to_address = address
             else:
                 caaj_type = 'send'
@@ -749,7 +749,7 @@ class KavaPlugin:
         return value
 
     @classmethod
-    def _get_caaj_fee(cls, address: str, transaction: Transaction, token_table: TokenOriginalIdTable, trade_uuid) -> list:
+    def _get_caaj_fee(cls, address: str, transaction: KavaTransaction, token_table: TokenOriginalIdTable, trade_uuid) -> list:
         caajs = []
         caajs.append(CaajJournal(
             transaction.get_timestamp(),

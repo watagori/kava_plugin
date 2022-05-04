@@ -1071,6 +1071,33 @@ class TestKavaPlugin(unittest.TestCase):
         assert caaj_create_atomic_swap.caaj_to == "kava_bc_atomic_swap"
         assert caaj_create_atomic_swap.comment == "kava1mdm5595gw7n2yrfa6fjdrk2xwzn4njkj2akvq4 send 1.33428994 bnb to kava_bc_atomic_swap"
 
+        # v9
+        test_data = TestKavaPlugin._get_test_data("createAtomicSwap_v9")
+        transaction = KavaTransaction(test_data)
+        mock = TestKavaPlugin.get_token_table_mock()
+        caajs = KavaPlugin.get_caajs(
+            "kava1af7lm2qv9zp526gjd3cdxrpr9zeangjlyhjqjx",
+            transaction,
+            mock
+        )
+
+        caaj_create_atomic_swap = caajs[0]
+        assert caaj_create_atomic_swap.executed_at == "2022-01-27 02:23:59"
+        assert caaj_create_atomic_swap.chain == "kava"
+        assert caaj_create_atomic_swap.platform == "kava"
+        assert caaj_create_atomic_swap.application == "create atomic swap"
+        assert (
+            caaj_create_atomic_swap.transaction_id
+            == "9AA55DD057F91432FC1F5ABCF34D009BA680F05014FED09DD08B14E67E25D982"
+        )
+        assert caaj_create_atomic_swap.type == "send"
+        assert caaj_create_atomic_swap.amount == "310113.74719552"
+        assert caaj_create_atomic_swap.token_symbol == "busd"
+        assert caaj_create_atomic_swap.token_original_id == "busd"
+        assert caaj_create_atomic_swap.caaj_from == "kava1af7lm2qv9zp526gjd3cdxrpr9zeangjlyhjqjx"
+        assert caaj_create_atomic_swap.caaj_to == "kava_bc_atomic_swap"
+        assert caaj_create_atomic_swap.comment == "kava1af7lm2qv9zp526gjd3cdxrpr9zeangjlyhjqjx send 310113.74719552 busd to kava_bc_atomic_swap"
+
         # claimAtomicSwap
         test_data = TestKavaPlugin._get_test_data("claimAtomicSwap_v4")
         transaction = KavaTransaction(test_data)

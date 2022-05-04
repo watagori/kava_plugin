@@ -51,8 +51,21 @@ class KavaUtil:
     def split_amount(cls, amount_token: str) -> Union[Decimal, str]:
         amount = re.findall(r'\d+', amount_token)[0]
         token = amount_token[len(amount):]
-        if token == 'ukava':
+        if token == 'ukava' or token == '':
             token = 'kava'
         elif token == 'xrpb':
             token = 'xrp'
         return amount, token
+
+    @classmethod
+    def get_rewards(cls, event) -> list:
+        if event is None:
+            return []
+
+        rewards = []
+        amounts = KavaUtil.get_attribute_value(event['attributes'], 'amount').split(',')
+        for amount in amounts:
+            amount, token = KavaUtil.split_amount(amount)
+            amount = str(KavaUtil.convert_uamount_amount(amount))
+            rewards.append({'reward_token': token, 'reward_amount': amount})
+        return rewards

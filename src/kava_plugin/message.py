@@ -7,6 +7,15 @@ logger.addHandler(logging.NullHandler())
 
 getcontext().prec = 50
 
+DELEGATE_ACTIONS = ['delegate',
+                    'begin_redelegate',
+                    'claim_delegator_reward',
+                    'withdraw_delegator_reward',
+                    '/cosmos.staking.v1beta1.MsgBeginRedelegate',
+                    '/cosmos.staking.v1beta1.MsgDelegate',
+                    '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward',
+                    '/kava.incentive.v1beta1.MsgClaimDelegatorReward']
+
 
 class Message:
     def __init__(self, logs_events, messages_events, height, chain_id):
@@ -24,9 +33,9 @@ class Message:
         action = self.get_action()
         logger.debug(action)
         result = {'action': None, 'result': None}
-        if action == 'delegate' or action == 'begin_redelegate' or action == 'claim_delegator_reward' or action == 'withdraw_delegator_reward':
+        if action in DELEGATE_ACTIONS:
             result = self.__as_delegate()
-        elif action == 'begin_unbonding':
+        elif action == 'begin_unbonding' or action == '/cosmos.staking.v1beta1.MsgUndelegate':
             result = self.__as_begin_unbonding()
         elif action == 'create_cdp':
             result = self.__as_create_cdp()
@@ -48,7 +57,7 @@ class Message:
             result = self.__as_hard_borrow()
         elif action == 'hard_repay':
             result = self.__as_hard_repay()
-        elif action == 'claim_hard_reward' or action == 'claim_harvest_reward':
+        elif action in ['claim_hard_reward', 'claim_harvest_reward', '/kava.incentive.v1beta1.MsgClaimHardReward']:
             result = self.__as_claim_hard_reward()
         elif action == 'swap_exact_for_tokens' or action == 'swap_for_exact_tokens':
             result = self.__as_swap_exact_for_tokens()
@@ -58,13 +67,13 @@ class Message:
             result = self.__as_swap_withdraw()
         elif action == 'claim_swap_reward':
             result = self.__as_claim_swap_reward()
-        elif action == 'send':
+        elif action == 'send' or action == '/cosmos.bank.v1beta1.MsgSend':
             result = self.__as_send()
-        elif action == 'createAtomicSwap':
+        elif action == 'createAtomicSwap' or action == '/kava.bep3.v1beta1.MsgCreateAtomicSwap':
             result = self.__as_create_atomic_swap()
         elif action == 'claimAtomicSwap' or action == 'refundAtomicSwap':
             result = self.__as_claim_atomic_swap()
-        elif action == 'vote' or action == 'committee_vote' or action == 'post_price':
+        elif action in ['vote', 'committee_vote', 'post_price']:
             result = {'action': 'vote', 'result': None}
         else:
             logger.error(f'unknown action: {action}')
@@ -76,38 +85,29 @@ class Message:
         event = KavaUtil.get_event_value(self.logs_events, 'delegate')
         if event is not None:
             amount = KavaUtil.get_attribute_value(event['attributes'], 'amount')
+            amount, token = KavaUtil.split_amount(amount)
             amount = str(KavaUtil.convert_uamount_amount(amount))
-            result['result']['staking_token'] = 'kava'
+            result['result']['staking_token'] = token
             result['result']['staking_amount'] = amount
 
-        rewards = []
-        # try to find delegate reward
         event = KavaUtil.get_event_value(self.logs_events, 'transfer')
-        if event is not None:
-            amounts = KavaUtil.get_attribute_value(event['attributes'], 'amount').split(',')
-            for amount in amounts:
-                amount, token = KavaUtil.split_amount(amount)
-                amount = str(KavaUtil.convert_uamount_amount(amount))
-                rewards.append({'reward_token': token, 'reward_amount': amount})
+        rewards = KavaUtil.get_rewards(event)
         result['result']['rewards'] = rewards
 
         return result
 
     def __as_begin_unbonding(self):
+        result = {'action': 'begin_unbonding', 'result': {'unbonding_token': None, 'unbonding_amount': None}}
         event = KavaUtil.get_event_value(self.logs_events, 'unbond')
-        amount = KavaUtil.get_attribute_value(event['attributes'], 'amount')
-        amount = str(KavaUtil.convert_uamount_amount(amount))
-
-        result = {'action': 'begin_unbonding', 'result': {'unbonding_token': 'kava', 'unbonding_amount': amount}}
-        rewards = []
-        # try to find delegate reward
-        event = KavaUtil.get_event_value(self.logs_events, 'transfer')
         if event is not None:
-            amounts = KavaUtil.get_attribute_value(event['attributes'], 'amount').split(',')
-        for amount in amounts:
+            amount = KavaUtil.get_attribute_value(event['attributes'], 'amount')
             amount, token = KavaUtil.split_amount(amount)
             amount = str(KavaUtil.convert_uamount_amount(amount))
-            rewards.append({'reward_token': token, 'reward_amount': amount})
+            result['result']['unbonding_token'] = token
+            result['result']['unbonding_amount'] = amount
+
+        event = KavaUtil.get_event_value(self.logs_events, 'transfer')
+        rewards = KavaUtil.get_rewards(event)
         result['result']['rewards'] = rewards
 
         return result
@@ -180,13 +180,10 @@ class Message:
         return result
 
     def __as_claim_usdx_minting_reward(self):
-        result = {'action': 'claim_usdx_minting_reward', 'result': {'rewards': [{'reward_token': None, 'reward_amount': None}]}}
+        result = {'action': 'claim_usdx_minting_reward', 'result': {'rewards': []}}
         event = KavaUtil.get_event_value(self.logs_events, 'transfer')
-        if event is not None:
-            amount = KavaUtil.get_attribute_value(event['attributes'], 'amount')
-            amount, token = KavaUtil.split_amount(amount)
-            result['result']['rewards'][0]['reward_token'] = token
-            result['result']['rewards'][0]['reward_amount'] = str(KavaUtil.convert_uamount_amount(amount, token))
+        rewards = KavaUtil.get_rewards(event)
+        result['result']['rewards'] = rewards
 
         return result
 
@@ -235,15 +232,9 @@ class Message:
         return result
 
     def __as_claim_hard_reward(self):
-        result = {'action': 'claim_hard_reward', 'result': {}}
-        rewards = []
+        result = {'action': 'claim_hard_reward', 'result': {'rewards': []}}
         event = KavaUtil.get_event_value(self.logs_events, 'transfer')
-        if event is not None:
-            claim_amounts = KavaUtil.get_attribute_value(event['attributes'], 'amount').split(',')
-            for amount in claim_amounts:
-                amount, token = KavaUtil.split_amount(amount)
-                amount = str(KavaUtil.convert_uamount_amount(amount))
-                rewards.append({'reward_token': token, 'reward_amount': amount})
+        rewards = KavaUtil.get_rewards(event)
         result['result']['rewards'] = rewards
 
         return result
@@ -305,15 +296,9 @@ class Message:
         return result
 
     def __as_claim_swap_reward(self):
-        result = {'action': 'claim_swap_reward', 'result': {}}
-        rewards = []
+        result = {'action': 'claim_swap_reward', 'result': {'rewards': []}}
         event = KavaUtil.get_event_value(self.logs_events, 'transfer')
-        if event is not None:
-            claim_amounts = KavaUtil.get_attribute_value(event['attributes'], 'amount').split(',')
-            for amount in claim_amounts:
-                amount, token = KavaUtil.split_amount(amount)
-                amount = str(KavaUtil.convert_uamount_amount(amount))
-                rewards.append({'reward_token': token, 'reward_amount': amount})
+        rewards = KavaUtil.get_rewards(event)
         result['result']['rewards'] = rewards
 
         return result

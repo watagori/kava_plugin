@@ -31,6 +31,6 @@ if __name__ == "__main__":
             caajs.extend(caaj_peace)
 
     df = pd.DataFrame(caajs)
-    df = df.sort_values("time")
+    df = df.sort_values("executed_at")
     caaj_csv = df.to_csv(None, index=False)
     print(caaj_csv)
