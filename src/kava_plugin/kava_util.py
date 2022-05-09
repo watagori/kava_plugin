@@ -1,6 +1,6 @@
 from decimal import getcontext, Decimal
 import re
-from typing import Union
+from typing import Union, Tuple
 import logging
 
 logger = logging.getLogger(name=__name__)
@@ -48,7 +48,7 @@ class KavaUtil:
         return atom
 
     @classmethod
-    def split_amount(cls, amount_token: str) -> Union[Decimal, str]:
+    def split_amount(cls, amount_token: str) -> Tuple[Union[Decimal, str], str]:
         amount = re.findall(r'\d+', amount_token)[0]
         token = amount_token[len(amount):]
         if token == 'ukava' or token == '':

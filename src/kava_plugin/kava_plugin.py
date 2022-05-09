@@ -4,6 +4,7 @@ from decimal import Decimal
 from senkalib.caaj_journal import CaajJournal
 from senkalib.chain.kava.kava_transaction import KavaTransaction
 from senkalib.token_original_id_table import TokenOriginalIdTable
+from typing import Optional
 
 from kava_plugin.message_factory import MessageFactory
 
@@ -743,7 +744,7 @@ class KavaPlugin:
         return str(uuid.uuid4())
 
     @classmethod
-    def _get_token_original_id(cls, value: str) -> str:
+    def _get_token_original_id(cls, value: Optional[str]) -> Optional[str]:
         if value == "ukava" or value == 'kava' or value == "":
             value = None
         return value

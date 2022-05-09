@@ -1,6 +1,7 @@
 from decimal import getcontext
 import logging
 from kava_plugin.kava_util import KavaUtil
+from typing import Optional
 
 logger = logging.getLogger(name=__name__)
 logger.addHandler(logging.NullHandler())
@@ -24,9 +25,12 @@ class Message:
         self.height = height
         self.chain_id = chain_id
 
-    def get_action(self):
+    def get_action(self) -> Optional[str]:
         event = KavaUtil.get_event_value(self.logs_events, 'message')
-        action = KavaUtil.get_attribute_value(event['attributes'], 'action')
+        if event is not None:
+            action = KavaUtil.get_attribute_value(event['attributes'], 'action')
+        else:
+            action = None
         return action
 
     def get_result(self):
@@ -118,15 +122,15 @@ class Message:
         if event is not None:
             amount = KavaUtil.get_attribute_value(event['attributes'], 'amount')
             amount, token = KavaUtil.split_amount(amount)
-        result['result']['deposit_token'] = token
-        result['result']['deposit_amount'] = str(KavaUtil.convert_uamount_amount(amount, token))
+            result['result']['deposit_token'] = token
+            result['result']['deposit_amount'] = str(KavaUtil.convert_uamount_amount(amount, token))
 
         event = KavaUtil.get_event_value(self.logs_events, 'cdp_draw')
         if event is not None:
             amount = KavaUtil.get_attribute_value(event['attributes'], 'amount')
             amount, token = KavaUtil.split_amount(amount)
-        result['result']['draw_token'] = token
-        result['result']['draw_amount'] = str(KavaUtil.convert_uamount_amount(amount, token))
+            result['result']['draw_token'] = token
+            result['result']['draw_amount'] = str(KavaUtil.convert_uamount_amount(amount, token))
 
         return result
 
@@ -307,22 +311,25 @@ class Message:
         result = {'action': 'send', 'result': {'sender': None, 'recipient': None, 'token': None, 'amount': None}}
 
         message_event = KavaUtil.get_event_value(self.logs_events, 'message')
-        result['result']['sender'] = KavaUtil.get_attribute_value(message_event['attributes'], 'sender')
+        if message_event is not None:
+            result['result']['sender'] = KavaUtil.get_attribute_value(message_event['attributes'], 'sender')
 
         transfer_event = KavaUtil.get_event_value(self.logs_events, 'transfer')
-        result['result']['recipient'] = KavaUtil.get_attribute_value(transfer_event['attributes'], 'recipient')
-        amount = KavaUtil.get_attribute_value(transfer_event['attributes'], 'amount')
-        amount, token = KavaUtil.split_amount(amount)
-        amount = str(KavaUtil.convert_uamount_amount(amount))
-        result['result']['token'] = token
-        result['result']['amount'] = amount
+        if transfer_event is not None:
+            result['result']['recipient'] = KavaUtil.get_attribute_value(transfer_event['attributes'], 'recipient')
+            amount = KavaUtil.get_attribute_value(transfer_event['attributes'], 'amount')
+            amount, token = KavaUtil.split_amount(amount)
+            amount = str(KavaUtil.convert_uamount_amount(amount))
+            result['result']['token'] = token
+            result['result']['amount'] = amount
 
         return result
 
     def __as_create_atomic_swap(self):
         result = {'action': 'create_atomic_swap', 'result': {'sender': None, 'recipient': None, 'token': None, 'amount': None}}
         event = KavaUtil.get_event_value(self.logs_events, 'create_atomic_swap')
-        result['result']['sender'] = KavaUtil.get_attribute_value(event['attributes'], 'sender')
+        if event is not None:
+            result['result']['sender'] = KavaUtil.get_attribute_value(event['attributes'], 'sender')
 
         event = KavaUtil.get_event_value(self.logs_events, 'transfer')
         if event is not None:
