@@ -1,14 +1,17 @@
-from senkalib.chain.kava.kava_transaction import KavaTransaction
-from kava_plugin.kava_plugin import KavaPlugin
-import unittest
-from unittest.mock import MagicMock
 import json
+import unittest
+from typing import Optional
+from unittest.mock import MagicMock
+
+from senkalib.chain.kava.kava_transaction import KavaTransaction
+
+from kava_plugin.kava_plugin import KavaPlugin
 
 
 class TestKavaPlugin(unittest.TestCase):
     @classmethod
     def get_token_table_mock(cls):
-        def mock_get_symbol(chain: str, token_original_id: str) -> str:
+        def mock_get_symbol(chain: str, token_original_id: str) -> Optional[str]:
             if chain == "kava" and token_original_id is None:
                 return "kava"
             elif chain == "kava" and token_original_id == "hard":
@@ -35,9 +38,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         assert caajs[0].trade_uuid == caajs[1].trade_uuid
@@ -56,7 +57,10 @@ class TestKavaPlugin(unittest.TestCase):
         assert caaj_transaction_fee.amount == "0.0001"
         assert caaj_transaction_fee.token_symbol == "kava"
         assert caaj_transaction_fee.token_original_id is None
-        assert caaj_transaction_fee.caaj_from == "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc"
+        assert (
+            caaj_transaction_fee.caaj_from
+            == "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc"
+        )
         assert caaj_transaction_fee.caaj_to == "fee"
         assert caaj_transaction_fee.comment == ""
 
@@ -65,9 +69,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         assert caajs[0].trade_uuid == caajs[1].trade_uuid
@@ -111,9 +113,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         assert caajs[0].trade_uuid == caajs[1].trade_uuid
@@ -139,9 +139,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         caaj_reward = caajs[0]
@@ -165,9 +163,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         caaj_reward = caajs[0]
@@ -192,9 +188,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         assert caajs[0].trade_uuid == caajs[1].trade_uuid
@@ -239,9 +233,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         assert caajs[0].trade_uuid == caajs[1].trade_uuid
@@ -285,9 +277,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         caaj_borrow = caajs[0]
@@ -312,9 +302,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         assert caajs[0].trade_uuid == caajs[1].trade_uuid
@@ -358,9 +346,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         caaj_deposit = caajs[0]
@@ -385,9 +371,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         caaj_withdraw = caajs[0]
@@ -412,9 +396,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         caaj_reward = caajs[0]
@@ -439,9 +421,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         caaj_reward = caajs[0]
@@ -466,9 +446,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         caaj_deposit = caajs[0]
@@ -493,9 +471,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         caaj_deposit = caajs[0]
@@ -520,9 +496,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         caaj_withdraw = caajs[0]
@@ -547,9 +521,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         caaj_withdraw = caajs[0]
@@ -574,9 +546,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         caaj_borrow = caajs[0]
@@ -601,9 +571,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         caaj_repay = caajs[0]
@@ -628,9 +596,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         caaj_reward = caajs[0]
@@ -655,9 +621,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         caaj_reward = caajs[0]
@@ -682,9 +646,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1mdm5595gw7n2yrfa6fjdrk2xwzn4njkj2akvq4",
-            transaction,
-            mock
+            "kava1mdm5595gw7n2yrfa6fjdrk2xwzn4njkj2akvq4", transaction, mock
         )
 
         assert caajs[0].trade_uuid == caajs[1].trade_uuid
@@ -704,7 +666,9 @@ class TestKavaPlugin(unittest.TestCase):
         assert caaj_swap_input.amount == "0.03"
         assert caaj_swap_input.token_symbol == "bnb"
         assert caaj_swap_input.token_original_id == "bnb"
-        assert caaj_swap_input.caaj_from == "kava1mdm5595gw7n2yrfa6fjdrk2xwzn4njkj2akvq4"
+        assert (
+            caaj_swap_input.caaj_from == "kava1mdm5595gw7n2yrfa6fjdrk2xwzn4njkj2akvq4"
+        )
         assert caaj_swap_input.caaj_to == "kava_swap"
         assert caaj_swap_input.comment == "buy 12.290319 usdx sell 0.03 bnb"
 
@@ -747,9 +711,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1tnxjszq48g2k737920cchjqwccrqav053c26l0",
-            transaction,
-            mock
+            "kava1tnxjszq48g2k737920cchjqwccrqav053c26l0", transaction, mock
         )
 
         assert caajs[0].trade_uuid == caajs[1].trade_uuid
@@ -768,7 +730,9 @@ class TestKavaPlugin(unittest.TestCase):
         assert caaj_swap_input.amount == "13987.92220598"
         assert caaj_swap_input.token_symbol == "busd"
         assert caaj_swap_input.token_original_id == "busd"
-        assert caaj_swap_input.caaj_from == "kava1tnxjszq48g2k737920cchjqwccrqav053c26l0"
+        assert (
+            caaj_swap_input.caaj_from == "kava1tnxjszq48g2k737920cchjqwccrqav053c26l0"
+        )
         assert caaj_swap_input.caaj_to == "kava_swap"
         assert caaj_swap_input.comment == "buy 14238.68 usdx sell 13987.92220598 busd"
 
@@ -811,9 +775,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         assert caajs[0].trade_uuid == caajs[1].trade_uuid
@@ -875,9 +837,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         assert caajs[0].trade_uuid == caajs[1].trade_uuid
@@ -939,9 +899,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc",
-            transaction,
-            mock
+            "kava1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8m2splc", transaction, mock
         )
 
         caaj_reward = caajs[0]
@@ -967,9 +925,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1nzq60hrphyr8anvkw6fv93mhafew7ez4tq9ahv",
-            transaction,
-            mock
+            "kava1nzq60hrphyr8anvkw6fv93mhafew7ez4tq9ahv", transaction, mock
         )
 
         caaj_send = caajs[0]
@@ -987,16 +943,17 @@ class TestKavaPlugin(unittest.TestCase):
         assert caaj_send.token_original_id is None
         assert caaj_send.caaj_from == "kava1k760ypy9tzhp6l2rmg06sq4n74z0d3relc549c"
         assert caaj_send.caaj_to == "kava1nzq60hrphyr8anvkw6fv93mhafew7ez4tq9ahv"
-        assert caaj_send.comment == "kava1nzq60hrphyr8anvkw6fv93mhafew7ez4tq9ahv receive 13.5 kava from kava1k760ypy9tzhp6l2rmg06sq4n74z0d3relc549c"
+        assert (
+            caaj_send.comment
+            == "kava1nzq60hrphyr8anvkw6fv93mhafew7ez4tq9ahv receive 13.5 kava from kava1k760ypy9tzhp6l2rmg06sq4n74z0d3relc549c"
+        )
 
         # sender
         test_data = TestKavaPlugin._get_test_data("send_v8")
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1dlezgt8undlpvdp0esmzyvxzvc59gkd56vkmea",
-            transaction,
-            mock
+            "kava1dlezgt8undlpvdp0esmzyvxzvc59gkd56vkmea", transaction, mock
         )
 
         caaj_send = caajs[0]
@@ -1014,7 +971,10 @@ class TestKavaPlugin(unittest.TestCase):
         assert caaj_send.token_original_id is None
         assert caaj_send.caaj_from == "kava1dlezgt8undlpvdp0esmzyvxzvc59gkd56vkmea"
         assert caaj_send.caaj_to == "kava1ys70jvnajkv88529ys6urjcyle3k2j9r24g6a7"
-        assert caaj_send.comment == "kava1dlezgt8undlpvdp0esmzyvxzvc59gkd56vkmea send 2.17 kava to kava1ys70jvnajkv88529ys6urjcyle3k2j9r24g6a7"
+        assert (
+            caaj_send.comment
+            == "kava1dlezgt8undlpvdp0esmzyvxzvc59gkd56vkmea send 2.17 kava to kava1ys70jvnajkv88529ys6urjcyle3k2j9r24g6a7"
+        )
 
     def test_create_atomic_swap(self):
         # recipient
@@ -1022,9 +982,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1eyugkwc74zejgwdwl7mvm7pad4hzdnka4wmdmu",
-            transaction,
-            mock
+            "kava1eyugkwc74zejgwdwl7mvm7pad4hzdnka4wmdmu", transaction, mock
         )
 
         caaj_create_atomic_swap = caajs[0]
@@ -1041,17 +999,21 @@ class TestKavaPlugin(unittest.TestCase):
         assert caaj_create_atomic_swap.token_symbol == "bnb"
         assert caaj_create_atomic_swap.token_original_id == "bnb"
         assert caaj_create_atomic_swap.caaj_from == "kava_bc_atomic_swap"
-        assert caaj_create_atomic_swap.caaj_to == "kava1eyugkwc74zejgwdwl7mvm7pad4hzdnka4wmdmu"
-        assert caaj_create_atomic_swap.comment == "kava1eyugkwc74zejgwdwl7mvm7pad4hzdnka4wmdmu receive 0.1995 bnb from kava_bc_atomic_swap"
+        assert (
+            caaj_create_atomic_swap.caaj_to
+            == "kava1eyugkwc74zejgwdwl7mvm7pad4hzdnka4wmdmu"
+        )
+        assert (
+            caaj_create_atomic_swap.comment
+            == "kava1eyugkwc74zejgwdwl7mvm7pad4hzdnka4wmdmu receive 0.1995 bnb from kava_bc_atomic_swap"
+        )
 
         # sender
         test_data = TestKavaPlugin._get_test_data("createAtomicSwap_v8")
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1mdm5595gw7n2yrfa6fjdrk2xwzn4njkj2akvq4",
-            transaction,
-            mock
+            "kava1mdm5595gw7n2yrfa6fjdrk2xwzn4njkj2akvq4", transaction, mock
         )
 
         caaj_create_atomic_swap = caajs[0]
@@ -1067,18 +1029,22 @@ class TestKavaPlugin(unittest.TestCase):
         assert caaj_create_atomic_swap.amount == "1.33428994"
         assert caaj_create_atomic_swap.token_symbol == "bnb"
         assert caaj_create_atomic_swap.token_original_id == "bnb"
-        assert caaj_create_atomic_swap.caaj_from == "kava1mdm5595gw7n2yrfa6fjdrk2xwzn4njkj2akvq4"
+        assert (
+            caaj_create_atomic_swap.caaj_from
+            == "kava1mdm5595gw7n2yrfa6fjdrk2xwzn4njkj2akvq4"
+        )
         assert caaj_create_atomic_swap.caaj_to == "kava_bc_atomic_swap"
-        assert caaj_create_atomic_swap.comment == "kava1mdm5595gw7n2yrfa6fjdrk2xwzn4njkj2akvq4 send 1.33428994 bnb to kava_bc_atomic_swap"
+        assert (
+            caaj_create_atomic_swap.comment
+            == "kava1mdm5595gw7n2yrfa6fjdrk2xwzn4njkj2akvq4 send 1.33428994 bnb to kava_bc_atomic_swap"
+        )
 
         # v9
         test_data = TestKavaPlugin._get_test_data("createAtomicSwap_v9")
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1af7lm2qv9zp526gjd3cdxrpr9zeangjlyhjqjx",
-            transaction,
-            mock
+            "kava1af7lm2qv9zp526gjd3cdxrpr9zeangjlyhjqjx", transaction, mock
         )
 
         caaj_create_atomic_swap = caajs[0]
@@ -1094,18 +1060,22 @@ class TestKavaPlugin(unittest.TestCase):
         assert caaj_create_atomic_swap.amount == "310113.74719552"
         assert caaj_create_atomic_swap.token_symbol == "busd"
         assert caaj_create_atomic_swap.token_original_id == "busd"
-        assert caaj_create_atomic_swap.caaj_from == "kava1af7lm2qv9zp526gjd3cdxrpr9zeangjlyhjqjx"
+        assert (
+            caaj_create_atomic_swap.caaj_from
+            == "kava1af7lm2qv9zp526gjd3cdxrpr9zeangjlyhjqjx"
+        )
         assert caaj_create_atomic_swap.caaj_to == "kava_bc_atomic_swap"
-        assert caaj_create_atomic_swap.comment == "kava1af7lm2qv9zp526gjd3cdxrpr9zeangjlyhjqjx send 310113.74719552 busd to kava_bc_atomic_swap"
+        assert (
+            caaj_create_atomic_swap.comment
+            == "kava1af7lm2qv9zp526gjd3cdxrpr9zeangjlyhjqjx send 310113.74719552 busd to kava_bc_atomic_swap"
+        )
 
         # claimAtomicSwap
         test_data = TestKavaPlugin._get_test_data("claimAtomicSwap_v4")
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1nzq60hrphyr8anvkw6fv93mhafew7ez4tq9ahv",
-            transaction,
-            mock
+            "kava1nzq60hrphyr8anvkw6fv93mhafew7ez4tq9ahv", transaction, mock
         )
 
         caaj_create_atomic_swap = caajs[0]
@@ -1122,17 +1092,21 @@ class TestKavaPlugin(unittest.TestCase):
         assert caaj_create_atomic_swap.token_symbol == "xrp"
         assert caaj_create_atomic_swap.token_original_id == "xrp"
         assert caaj_create_atomic_swap.caaj_from == "kava_bc_atomic_swap"
-        assert caaj_create_atomic_swap.caaj_to == "kava1nzq60hrphyr8anvkw6fv93mhafew7ez4tq9ahv"
-        assert caaj_create_atomic_swap.comment == "kava1nzq60hrphyr8anvkw6fv93mhafew7ez4tq9ahv receive 99.889 xrp from kava_bc_atomic_swap"
+        assert (
+            caaj_create_atomic_swap.caaj_to
+            == "kava1nzq60hrphyr8anvkw6fv93mhafew7ez4tq9ahv"
+        )
+        assert (
+            caaj_create_atomic_swap.comment
+            == "kava1nzq60hrphyr8anvkw6fv93mhafew7ez4tq9ahv receive 99.889 xrp from kava_bc_atomic_swap"
+        )
 
         # refundAtomicSwap
         test_data = TestKavaPlugin._get_test_data("refundAtomicSwap_v6")
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava1eyugkwc74zejgwdwl7mvm7pad4hzdnka4wmdmu",
-            transaction,
-            mock
+            "kava1eyugkwc74zejgwdwl7mvm7pad4hzdnka4wmdmu", transaction, mock
         )
 
         caaj_create_atomic_swap = caajs[0]
@@ -1148,18 +1122,22 @@ class TestKavaPlugin(unittest.TestCase):
         assert caaj_create_atomic_swap.amount == "500"
         assert caaj_create_atomic_swap.token_symbol == "bnb"
         assert caaj_create_atomic_swap.token_original_id == "bnb"
-        assert caaj_create_atomic_swap.caaj_from == "kava1eyugkwc74zejgwdwl7mvm7pad4hzdnka4wmdmu"
+        assert (
+            caaj_create_atomic_swap.caaj_from
+            == "kava1eyugkwc74zejgwdwl7mvm7pad4hzdnka4wmdmu"
+        )
         assert caaj_create_atomic_swap.caaj_to == "kava_bc_atomic_swap"
-        assert caaj_create_atomic_swap.comment == "kava1eyugkwc74zejgwdwl7mvm7pad4hzdnka4wmdmu send 500 bnb to kava_bc_atomic_swap"
+        assert (
+            caaj_create_atomic_swap.comment
+            == "kava1eyugkwc74zejgwdwl7mvm7pad4hzdnka4wmdmu send 500 bnb to kava_bc_atomic_swap"
+        )
 
     def test_vote(self):
         test_data = TestKavaPlugin._get_test_data("vote_v8")
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava179ahnk902wgm7qzr66t5ga0a8euc28ce703jy3",
-            transaction,
-            mock
+            "kava179ahnk902wgm7qzr66t5ga0a8euc28ce703jy3", transaction, mock
         )
 
         caaj_transaction_fee = caajs[0]
@@ -1175,7 +1153,10 @@ class TestKavaPlugin(unittest.TestCase):
         assert caaj_transaction_fee.amount == "0.00075"
         assert caaj_transaction_fee.token_symbol == "kava"
         assert caaj_transaction_fee.token_original_id is None
-        assert caaj_transaction_fee.caaj_from == "kava179ahnk902wgm7qzr66t5ga0a8euc28ce703jy3"
+        assert (
+            caaj_transaction_fee.caaj_from
+            == "kava179ahnk902wgm7qzr66t5ga0a8euc28ce703jy3"
+        )
         assert caaj_transaction_fee.caaj_to == "fee"
         assert caaj_transaction_fee.comment == ""
 
@@ -1184,9 +1165,7 @@ class TestKavaPlugin(unittest.TestCase):
         transaction = KavaTransaction(test_data)
         mock = TestKavaPlugin.get_token_table_mock()
         caajs = KavaPlugin.get_caajs(
-            "kava179ahnk902wgm7qzr66t5ga0a8euc28ce703jy3",
-            transaction,
-            mock
+            "kava179ahnk902wgm7qzr66t5ga0a8euc28ce703jy3", transaction, mock
         )
 
         caaj_transaction_fee = caajs[0]
@@ -1202,7 +1181,10 @@ class TestKavaPlugin(unittest.TestCase):
         assert caaj_transaction_fee.amount == "0.01"
         assert caaj_transaction_fee.token_symbol == "kava"
         assert caaj_transaction_fee.token_original_id is None
-        assert caaj_transaction_fee.caaj_from == "kava179ahnk902wgm7qzr66t5ga0a8euc28ce703jy3"
+        assert (
+            caaj_transaction_fee.caaj_from
+            == "kava179ahnk902wgm7qzr66t5ga0a8euc28ce703jy3"
+        )
         assert caaj_transaction_fee.caaj_to == "fee"
         assert caaj_transaction_fee.comment == ""
 
