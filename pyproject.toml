@@ -8,7 +8,7 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = "^3.9"
 pandas = "^1.4.1"
-senkalib = {git = 'https://github.com/ca3-caaip/senkalib.git', rev = '9048df51f4f4a35b13295406489ea50e37b50b27' }
+senkalib = {git = 'https://github.com/watagori/senkalib.git', rev = '6f7194648bf4e22a7b2796524170d6438803b797' }
 
 [tool.poetry.dev-dependencies]
 flake8 = "^4.0.1"
